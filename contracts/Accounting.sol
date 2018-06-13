@@ -27,7 +27,7 @@ interface TokenRecipient {
 }
 
 /**
-    @notice: a simple base contract with accounting functionality for ETH only accounts
+    a simple base contract with accounting functionality for ETH only accounts
  */
 contract SimpleAccounting {
 
@@ -123,7 +123,7 @@ contract SimpleAccounting {
 }
 
 /**
-    @dev: a base contract with accounting functionality for ETH and ERC20 tokens
+ a base contract with accounting functionality for ETH and ERC20 tokens
  */
 contract Accounting is TokenRecipient {
 
@@ -195,6 +195,7 @@ contract Accounting is TokenRecipient {
     internal noReentrance 
     {
         require(a.balanceETH >= _value);
+        require(_to != address(0));
         
         a.balanceETH = a.balanceETH.sub(_value);
         totalETH = totalETH.sub(_value);
@@ -208,6 +209,7 @@ contract Accounting is TokenRecipient {
     internal noReentrance 
     {
         require(a.balanceETH >= _value);
+        require(_to != address(0));
         
         a.balanceETH = a.balanceETH.sub(_value);
         totalETH = totalETH.sub(_value);
@@ -221,6 +223,7 @@ contract Accounting is TokenRecipient {
     internal noReentrance 
     {
         require(a.tokenBalances[_token] >= _value);
+        require(_to != address(0));
         
         a.tokenBalances[_token] = a.tokenBalances[_token].sub(_value);
         totalTokenBalances[_token] = totalTokenBalances[_token].sub(_value);
@@ -263,7 +266,7 @@ contract Accounting is TokenRecipient {
 }
 
 /**
-    @dev: a base contract with accounting functionality for accounts with a set allowance of ETH or Dai. The allowance is set as Dai/s and when withdrawing allowance in ETH, the price of ETH/Dai is first checked
+    a base contract with accounting functionality for accounts with a set allowance of ETH or Dai. The allowance is set as Dai/s and when withdrawing allowance in ETH, the price of ETH/Dai is first checked
  */
 contract AllowanceAccounting is Accounting {
     
@@ -349,7 +352,7 @@ contract AllowanceAccounting is Accounting {
 }
 
 /**
-    @dev: a base contract with accounting functionality for ETH and ERC20 tokens. It implements super accounts which can contain numerous sub accounts. The super account can be drained (using all of the sub balances together).
+    a base contract with accounting functionality for ETH and ERC20 tokens. It implements super accounts which can contain numerous sub accounts. The super account can be drained (using all of the sub balances together).
  */
 contract SubAccounting is Accounting {
     
