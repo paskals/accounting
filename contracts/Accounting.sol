@@ -22,9 +22,6 @@ interface DSValue {
     function read() external constant returns (bytes32);
 }
 
-interface TokenRecipient { 
-    function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) external; 
-}
 
 /**
     a simple base contract with accounting functionality for ETH only accounts
@@ -60,10 +57,6 @@ contract SimpleAccounting {
     event ETHDeposited(bytes32 indexed account, address indexed from, uint value);
     event ETHSent(bytes32 indexed account, address indexed to, uint value);
     event ETHTransferred(bytes32 indexed fromAccount, bytes32 indexed toAccount, uint value);
-
-    function () public payable {
-        depositETH(base, msg.sender, msg.value);//deposti to the base account by default
-    }
 
     function baseETHBalance() public constant returns(uint) {
         return base.balance;
@@ -125,7 +118,7 @@ contract SimpleAccounting {
 /**
  a base contract with accounting functionality for ETH and ERC20 tokens
  */
-contract Accounting is TokenRecipient {
+contract Accounting {
 
     using DSMath for uint;
 
@@ -159,14 +152,6 @@ contract Accounting is TokenRecipient {
     event TokenTransferred(bytes32 indexed fromAccount, bytes32 indexed toAccount, address indexed token, uint value);
     event TokenDeposited(bytes32 indexed account, address indexed token, address indexed from, uint value);    
     event TokenSent(bytes32 indexed account, address indexed token, address indexed to, uint value);
-
-    function () public payable {
-        depositETH(base, msg.sender, msg.value);
-    }
-
-    function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) external {
-        depositToken(base, _token, _from, _value);
-    }
 
     function baseETHBalance() public constant returns(uint) {
         return base.balanceETH;
@@ -344,11 +329,6 @@ contract AllowanceAccounting is Accounting {
         sendToken(a.base, stableCoin, _to, amount);
     }
 
-    ///ONLY FOR TEST
-    // function setPriceFeed(address _newFeed, address _stableCoin) public {
-    //     priceFeed = DSValue(_newFeed);
-    //     stableCoin = ERC20(_stableCoin);
-    // }
 }
 
 /**
