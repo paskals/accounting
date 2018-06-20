@@ -3,9 +3,9 @@ pragma solidity^0.4.23;
 import "../contracts/Accounting.sol";
 import "https://github.com/dapphub/ds-auth/blob/master/src/auth.sol";
 
-contract DepositBox is Accounting, Auth {
+contract DepositBox is Accounting, DSAuth {
 
-    mapping (address=>Account) accounts;
+    mapping (address => Account) accounts;
 
     constructor () {}
 
@@ -48,7 +48,7 @@ contract DepositBox is Accounting, Auth {
         balanceToken(base, token, surplus);
     }
 
-    function withdrawBase() public auth {
+    function withdrawBaseETH() public auth {
         sendETH(base, msg.sender, base.balanceETH);
     }
 
