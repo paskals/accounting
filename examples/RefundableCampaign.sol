@@ -1,7 +1,7 @@
 pragma solidity^0.4.23;
 
 import "../contracts/Accounting.sol";
-import "https://github.com/dapphub/ds-auth/blob/master/src/auth.sol";
+import "../lib/ds-auth/src/auth.sol";
 
 contract RefundableCampaign is SubAccounting, DSAuth {
 
