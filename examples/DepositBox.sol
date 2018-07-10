@@ -1,7 +1,7 @@
 pragma solidity^0.4.23;
 
 import "../contracts/Accounting.sol";
-import "../lib/ds-auth/src/auth.sol";
+import "../lib/ds-auth/auth.sol";
 
 contract DepositBox is Accounting, DSAuth {
 
