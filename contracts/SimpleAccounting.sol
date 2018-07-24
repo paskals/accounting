@@ -27,13 +27,13 @@ contract SimpleAccounting {
     uint public totalETH;
 
     //A simple account has a balance and a name
-    struct Account {
+    struct SimpleAccount {
         bytes32 name;
         uint balance;        
     }
 
     //There's always a base account
-    Account base = Account({
+    SimpleAccount base = SimpleAccount({
         name: "Base",
         balance: 0        
     });
@@ -46,13 +46,13 @@ contract SimpleAccounting {
         return base.balance;
     }
 
-    function depositETH(Account storage a, address _from, uint _value) internal {
+    function depositETH(SimpleAccount storage a, address _from, uint _value) internal {
         a.balance = a.balance.add(_value);
         totalETH = totalETH.add(_value);
         emit ETHDeposited(a.name, _from, _value); 
     }
 
-    function sendETH(Account storage a, address _to, uint _value) 
+    function sendETH(SimpleAccount storage a, address _to, uint _value) 
     internal noReentrance 
     {
         require(a.balance >= _value);
@@ -66,7 +66,7 @@ contract SimpleAccounting {
         emit ETHSent(a.name, _to, _value);
     }
 
-    function transact(Account storage a, address _to, uint _value, bytes data) 
+    function transact(SimpleAccount storage a, address _to, uint _value, bytes data) 
     internal noReentrance 
     {
         require(a.balance >= _value);
@@ -80,7 +80,7 @@ contract SimpleAccounting {
         emit ETHSent(a.name, _to, _value);
     }
 
-    function transferETH(Account storage _from, Account storage _to, uint _value) 
+    function transferETH(SimpleAccount storage _from, SimpleAccount storage _to, uint _value) 
     internal 
     {
         require(_from.balance >= _value);
@@ -92,7 +92,7 @@ contract SimpleAccounting {
     /**
         @notice we can balance surpluses to an account - e.g. if this.balance increases without our accounting, we can balance the surplus to an account
      */
-    function balance(Account storage toAccount,  uint _value) internal {
+    function balance(SimpleAccount storage toAccount,  uint _value) internal {
         require(address(this).balance >= totalETH.add(_value));
         depositETH(toAccount, 0x0, _value);
     }

@@ -5,8 +5,6 @@
 pragma solidity^0.4.24;
 
 import "./Accounting.sol";
-import "../lib/math-lib.sol";
-import "../lib/erc20.sol";
 import "../lib/value.sol";
 
 /**

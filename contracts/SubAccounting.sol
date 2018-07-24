@@ -5,8 +5,6 @@
 pragma solidity^0.4.24;
 
 import "./Accounting.sol";
-import "../lib/math-lib.sol";
-import "../lib/erc20.sol";
 
 /**
     a base contract with accounting functionality for ETH and ERC20 tokens. It implements super accounts which can contain numerous sub accounts. The super account can be drained (using all of the sub balances together).
