@@ -1,6 +1,6 @@
 pragma solidity^0.4.23;
 
-import "../contracts/Accounting.sol";
+import "../contracts/SubAccounting.sol";
 import "../lib/auth.sol";
 
 contract RefundableCampaign is SubAccounting, DSAuth {
