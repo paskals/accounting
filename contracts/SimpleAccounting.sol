@@ -2,7 +2,7 @@
     @title: Simple Accounting
     @author: Paskal S
  */
-pragma solidity^0.4.24;
+pragma solidity^0.5.0;
 
 import "../lib/math-lib.sol";
 import "../lib/erc20.sol";
@@ -17,7 +17,7 @@ contract SimpleAccounting {
     bool internal _in;
     
     modifier noReentrance() {
-        require(!_in);
+        require(!_in, "Reentrance not allowed!");
         _in = true;
         _;
         _in = false;
@@ -42,7 +42,7 @@ contract SimpleAccounting {
     event ETHSent(bytes32 indexed account, address indexed to, uint value);
     event ETHTransferred(bytes32 indexed fromAccount, bytes32 indexed toAccount, uint value);
 
-    function baseETHBalance() public constant returns(uint) {
+    function baseETHBalance() public view returns(uint) {
         return base.balance;
     }
 
@@ -55,8 +55,8 @@ contract SimpleAccounting {
     function sendETH(SimpleAccount storage a, address _to, uint _value) 
     internal noReentrance 
     {
-        require(a.balance >= _value);
-        require(_to != address(0));
+        require(a.balance >= _value, "Insufficient ETH balance!");
+        require(_to != address(0), "Invalid recipient addess!");
         
         a.balance = a.balance.sub(_value);
         totalETH = totalETH.sub(_value);
@@ -69,13 +69,13 @@ contract SimpleAccounting {
     function transact(SimpleAccount storage a, address _to, uint _value, bytes data) 
     internal noReentrance 
     {
-        require(a.balance >= _value);
-        require(_to != address(0));
+        require(a.balance >= _value, "Insufficient ETH balance!");
+        require(_to != address(0), "Invalid recipient addess!");
         
         a.balance = a.balance.sub(_value);
         totalETH = totalETH.sub(_value);
 
-        require(_to.call.value(_value)(data));
+        require(_to.call.value(_value)(data), "Transaction failed!");
         
         emit ETHSent(a.name, _to, _value);
     }
@@ -83,7 +83,7 @@ contract SimpleAccounting {
     function transferETH(SimpleAccount storage _from, SimpleAccount storage _to, uint _value) 
     internal 
     {
-        require(_from.balance >= _value);
+        require(_from.balance >= _value, "Insufficient ETH balance in account!");
         _from.balance = _from.balance.sub(_value);
         _to.balance = _to.balance.add(_value);
         emit ETHTransferred(_from.name, _to.name, _value);
@@ -93,7 +93,7 @@ contract SimpleAccounting {
         @notice we can balance surpluses to an account - e.g. if this.balance increases without our accounting, we can balance the surplus to an account
      */
     function balance(SimpleAccount storage toAccount,  uint _value) internal {
-        require(address(this).balance >= totalETH.add(_value));
+        require(address(this).balance >= totalETH.add(_value), "No excess ETH available");
         depositETH(toAccount, 0x0, _value);
     }
 

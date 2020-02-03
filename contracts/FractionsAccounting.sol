@@ -2,7 +2,7 @@
     @title: Fractions Accounting
     @author: Paskal S
  */
-pragma solidity^0.4.24;
+pragma solidity^0.5.0;
 
 import "./SimpleAccounting.sol";
 import "./Accounting.sol";
@@ -77,7 +77,7 @@ contract FractionsAccounting is Accounting, SimpleAccounting {
     function sendOutstandingETH(SharedAccount storage a, bytes32 _subAccount, address _to) 
     internal noReentrance 
     {
-        require(balanceAvailable(a, _subAccount));
+        require(balanceAvailable(a, _subAccount), "Insufficient ETH balance!");
         updateBalance(a, _subAccount);
         uint _value = a.subAccounts[_subAccount].balance;
         

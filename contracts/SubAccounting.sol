@@ -2,7 +2,7 @@
     @title: Sub Accounting
     @author: Paskal S
  */
-pragma solidity^0.4.24;
+pragma solidity^0.5.0;
 
 import "./Accounting.sol";
 
@@ -43,7 +43,7 @@ contract SubAccounting is Accounting {
         uint _value) 
     internal 
     {   
-        require(_from.subAccounts[_fromKey].balanceETH >= _value);
+        require(_from.subAccounts[_fromKey].balanceETH >= _value, "Insufficient ETH balance in account!");
         transferETH(_from.base, _to.base, _value);        
         _from.subAccounts[_fromKey].balanceETH = _from.subAccounts[_fromKey].balanceETH.sub(_value);
         _to.subAccounts[_toKey].balanceETH = _to.subAccounts[_toKey].balanceETH.add(_value);
@@ -57,7 +57,7 @@ contract SubAccounting is Accounting {
         uint _value) 
     internal 
     {   
-        require(_super.subAccounts[_fromKey].balanceETH >= _value);
+        require(_super.subAccounts[_fromKey].balanceETH >= _value, "Insufficient ETH balance in account!");
         _super.subAccounts[_fromKey].balanceETH = _super.subAccounts[_fromKey].balanceETH.sub(_value);
         _super.subAccounts[_toKey].balanceETH = _super.subAccounts[_toKey].balanceETH.add(_value);
     }
@@ -70,7 +70,7 @@ contract SubAccounting is Accounting {
         uint _value) 
     internal 
     {   
-        require(_from.subAccounts[_fromKey].balanceETH >= _value);
+        require(_from.subAccounts[_fromKey].balanceETH >= _value, "Insufficient ETH balance in account!");
         transferETH(_from.base, _to, _value);
         _from.subAccounts[_fromKey].balanceETH = _from.subAccounts[_fromKey].balanceETH.sub(_value);
     }
@@ -90,7 +90,7 @@ contract SubAccounting is Accounting {
     function sendETH(SuperAccount storage a, bytes32 _fromKey, address _to, uint _value) 
     internal  
     {
-        require(a.subAccounts[_fromKey].balanceETH >= _value);
+        require(a.subAccounts[_fromKey].balanceETH >= _value, "Insufficient ETH balance in account!");
         a.subAccounts[_fromKey].balanceETH = a.subAccounts[_fromKey].balanceETH.sub(_value);
         sendETH(a.base, _to, _value);
     }
@@ -105,7 +105,7 @@ contract SubAccounting is Accounting {
         uint _value) 
     internal  
     {
-        require(_from.subAccounts[_fromKey].tokenBalances[_token] >= _value);
+        require(_from.subAccounts[_fromKey].tokenBalances[_token] >= _value, "Insufficient token balance in account!");
         transferToken(_from.base, _to.base, _token, _value);        
         _from.subAccounts[_fromKey].tokenBalances[_token] = _from.subAccounts[_fromKey].tokenBalances[_token].sub(_value);
         _to.subAccounts[_toKey].tokenBalances[_token] = _to.subAccounts[_toKey].tokenBalances[_token].add(_value);
@@ -120,7 +120,7 @@ contract SubAccounting is Accounting {
         uint _value) 
     internal 
     {   
-        require(_super.subAccounts[_fromKey].tokenBalances[_token] >= _value);
+        require(_super.subAccounts[_fromKey].tokenBalances[_token] >= _value, "Insufficient token balance in account!");
         _super.subAccounts[_fromKey].tokenBalances[_token] = _super.subAccounts[_fromKey].tokenBalances[_token].sub(_value);
         _super.subAccounts[_toKey].tokenBalances[_token] = _super.subAccounts[_toKey].tokenBalances[_token].add(_value);
     }
@@ -134,7 +134,7 @@ contract SubAccounting is Accounting {
         uint _value) 
     internal 
     {   
-        require(_from.subAccounts[_fromKey].tokenBalances[_token] >= _value);
+        require(_from.subAccounts[_fromKey].tokenBalances[_token] >= _value, "Insufficient token balance in account!");
         transferToken(_from.base, _to, _token, _value);
         _from.subAccounts[_fromKey].tokenBalances[_token] = _from.subAccounts[_fromKey].tokenBalances[_token].sub(_value);
     }
@@ -155,7 +155,7 @@ contract SubAccounting is Accounting {
     function sendToken(SuperAccount storage a, bytes32 _fromKey, address _to, address _token, uint _value) 
     internal 
     {
-        require(a.subAccounts[_fromKey].tokenBalances[_token] >= _value);
+        require(a.subAccounts[_fromKey].tokenBalances[_token] >= _value, "Insufficient token balance in account!");
         a.subAccounts[_fromKey].tokenBalances[_token] = a.subAccounts[_fromKey].tokenBalances[_token].sub(_value);
         sendToken(a.base, _to, _token, _value);
     }
