@@ -1,4 +1,4 @@
-pragma solidity^0.4.20;
+pragma solidity>=0.4.20;
 
 /**
     Library version of the original DS Math: https://github.com/dapphub/ds-math/blob/master/src/math.sol

@@ -2,7 +2,7 @@
     @title: Allowance Accounting
     @author: Paskal S
  */
-pragma solidity^0.5.0;
+pragma solidity >=0.5.0 <0.6.0;
 
 import "./Accounting.sol";
 import "../lib/value.sol";
@@ -31,10 +31,10 @@ contract AllowanceAccounting is Accounting {
 
     function depositDai(LimitedAccount storage a, address _from, uint _value) internal {
         
-        depositToken(a.base, stableCoin, _from, _value);
+        depositToken(a.base, address(stableCoin), _from, _value);
     }
 
-    function sendETHAllowance(LimitedAccount storage a, address _to) internal {
+    function sendETHAllowance(LimitedAccount storage a, address payable _to) internal {
         require(a.base.balanceETH > 0, "Insufficient ETH balance!");
         uint amount;
         
@@ -50,7 +50,7 @@ contract AllowanceAccounting is Accounting {
         sendETH(a.base, _to, amount);
     }
 
-    function transactETHAllowance(LimitedAccount storage a, address _to, bytes data) 
+    function transactETHAllowance(LimitedAccount storage a, address _to, bytes memory data) 
     internal noReentrance
     {
         require(a.base.balanceETH > 0, "Insufficient ETH balance!");
@@ -71,19 +71,19 @@ contract AllowanceAccounting is Accounting {
     function sendDaiAllowance(LimitedAccount storage a, address _to) 
     internal 
     {
-        require(a.base.tokenBalances[stableCoin] > 0, "Insufficient Dai balance!");
+        require(a.base.tokenBalances[address(stableCoin)] > 0, "Insufficient Dai balance!");
         
         uint amount;
 
         amount = a.allowance.mul(block.timestamp.sub(a.lastWithdrawn));
         
-        if(amount > a.base.tokenBalances[stableCoin]) {
-            amount == a.base.tokenBalances[stableCoin];
+        if(amount > a.base.tokenBalances[address(stableCoin)]) {
+            amount == a.base.tokenBalances[address(stableCoin)];
         }
 
         a.lastWithdrawn = block.timestamp;
         
-        sendToken(a.base, stableCoin, _to, amount);
+        sendToken(a.base, address(stableCoin), _to, amount);
     }
 
 }

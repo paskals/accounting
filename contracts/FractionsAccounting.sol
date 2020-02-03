@@ -2,7 +2,7 @@
     @title: Fractions Accounting
     @author: Paskal S
  */
-pragma solidity^0.5.0;
+pragma solidity >=0.5.0 <0.6.0;
 
 import "./SimpleAccounting.sol";
 import "./Accounting.sol";
@@ -74,7 +74,7 @@ contract FractionsAccounting is Accounting, SimpleAccounting {
         _to.lastDepositBnum = block.number;
     }
 
-    function sendOutstandingETH(SharedAccount storage a, bytes32 _subAccount, address _to) 
+    function sendOutstandingETH(SharedAccount storage a, bytes32 _subAccount, address payable _to) 
     internal noReentrance 
     {
         require(balanceAvailable(a, _subAccount), "Insufficient ETH balance!");
@@ -84,6 +84,6 @@ contract FractionsAccounting is Accounting, SimpleAccounting {
         a.subAccounts[_subAccount].lastWithdrawnBnum = block.number;
         a.subAccounts[_subAccount].balance = 0;
         
-        sendETH(a.base, _to, _value);
+        SimpleAccounting.sendETH(a.base, _to, _value);
     }
 }

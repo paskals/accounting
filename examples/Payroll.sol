@@ -1,4 +1,4 @@
-pragma solidity^0.4.23;
+pragma solidity >=0.5.0 <0.6.0;
 
 import "../contracts/AllowanceAccounting.sol";
 import "../lib/auth.sol";
@@ -7,7 +7,7 @@ contract Payroll is AllowanceAccounting, DSAuth {
 
     mapping (address => LimitedAccount) accounts;
 
-    constructor () {
+    constructor () public {
         //set Dai address
     }
 

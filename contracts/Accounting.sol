@@ -4,7 +4,7 @@
     @author: Paskal S
  */
 
-pragma solidity^0.5.0;
+pragma solidity >=0.5.0 <0.6.0;
 
 import "../lib/math-lib.sol";
 import "../lib/erc20.sol";
@@ -70,7 +70,7 @@ contract Accounting {
         emit TokenDeposited(a.name, _token, _from, _value);
     }
 
-    function sendETH(Account storage a, address _to, uint _value) 
+    function sendETH(Account storage a, address payable _to, uint _value) 
     internal noReentrance 
     {
         require(a.balanceETH >= _value, "Insufficient ETH balance!");
@@ -84,16 +84,17 @@ contract Accounting {
         emit ETHSent(a.name, _to, _value);
     }
 
-    function transact(Account storage a, address _to, uint _value, bytes data) 
+    function transact(Account storage a, address _to, uint _value, bytes memory data) 
     internal noReentrance 
     {
         require(a.balanceETH >= _value, "Insufficient ETH balance!");
         require(_to != address(0), "Invalid recipient addess!");
-        
+       
         a.balanceETH = a.balanceETH.sub(_value);
         totalETH = totalETH.sub(_value);
-
-        require(_to.call.value(_value)(data), "Transaction failed!");
+        bool result = false;
+        (result, ) = _to.call.value(_value)(data);
+        require(result, "Transaction failed!");
         
         emit ETHSent(a.name, _to, _value);
     }
@@ -135,7 +136,7 @@ contract Accounting {
     }
 
     function balanceToken(Account storage toAccount, address _token, uint _value) internal noReentrance {
-        uint balance = ERC20(_token).balanceOf(this);
+        uint balance = ERC20(_token).balanceOf(address(this));
         require(balance >= totalTokenBalances[_token].add(_value), "No excess tokens available");
 
         toAccount.tokenBalances[_token] = toAccount.tokenBalances[_token].add(_value);

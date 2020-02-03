@@ -2,7 +2,7 @@
     @title: Simple Accounting
     @author: Paskal S
  */
-pragma solidity^0.5.0;
+pragma solidity >=0.5.0 <0.6.0;
 
 import "../lib/math-lib.sol";
 import "../lib/erc20.sol";
@@ -52,7 +52,7 @@ contract SimpleAccounting {
         emit ETHDeposited(a.name, _from, _value); 
     }
 
-    function sendETH(SimpleAccount storage a, address _to, uint _value) 
+    function sendETH(SimpleAccount storage a, address payable _to, uint _value) 
     internal noReentrance 
     {
         require(a.balance >= _value, "Insufficient ETH balance!");
@@ -66,7 +66,7 @@ contract SimpleAccounting {
         emit ETHSent(a.name, _to, _value);
     }
 
-    function transact(SimpleAccount storage a, address _to, uint _value, bytes data) 
+    function transact(SimpleAccount storage a, address _to, uint _value, bytes memory data) 
     internal noReentrance 
     {
         require(a.balance >= _value, "Insufficient ETH balance!");
@@ -75,7 +75,9 @@ contract SimpleAccounting {
         a.balance = a.balance.sub(_value);
         totalETH = totalETH.sub(_value);
 
-        require(_to.call.value(_value)(data), "Transaction failed!");
+        bool result = false;
+        (result, ) = _to.call.value(_value)(data);
+        require(result, "Transaction failed!");
         
         emit ETHSent(a.name, _to, _value);
     }
@@ -94,7 +96,7 @@ contract SimpleAccounting {
      */
     function balance(SimpleAccount storage toAccount,  uint _value) internal {
         require(address(this).balance >= totalETH.add(_value), "No excess ETH available");
-        depositETH(toAccount, 0x0, _value);
+        depositETH(toAccount, address(0x0), _value);
     }
 
 }

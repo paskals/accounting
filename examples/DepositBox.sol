@@ -1,4 +1,4 @@
-pragma solidity^0.4.23;
+pragma solidity >=0.5.0 <0.6.0;
 
 import "../contracts/Accounting.sol";
 import "../lib/auth.sol";
@@ -7,9 +7,9 @@ contract DepositBox is Accounting, DSAuth {
 
     mapping (address => Account) accounts;
 
-    constructor () {}
+    constructor () public {}
 
-    function () public payable {
+    function () external payable {
         depositETH(accounts[msg.sender], msg.sender, msg.value);
     }
 
@@ -38,12 +38,12 @@ contract DepositBox is Accounting, DSAuth {
     }
 
     function redeemSurplusETH() public auth {
-        uint surplus = this.balance.sub(totalETH);
+        uint surplus = address(this).balance.sub(totalETH);
         balanceETH(base, surplus);
     }
 
     function redeemSurplusERC20(address token) public auth {
-        uint realTokenBalance = ERC20(token).balanceOf(this);
+        uint realTokenBalance = ERC20(token).balanceOf(address(this));
         uint surplus = realTokenBalance.sub(totalTokenBalances[token]);
         balanceToken(base, token, surplus);
     }
